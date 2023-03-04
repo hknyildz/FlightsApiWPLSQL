@@ -29,6 +29,10 @@ public class Airline {
         this.airlineCode = airlineCode;
     }
 
+    public Airline() {
+
+    }
+
     public Long getId() {
         return id;
     }

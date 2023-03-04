@@ -30,6 +30,10 @@ public class Airplane {
         this.airplaneCode = airplaneCode;
     }
 
+    public Airplane() {
+
+    }
+
     public Long getId() {
         return id;
     }

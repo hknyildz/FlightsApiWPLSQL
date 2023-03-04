@@ -1,7 +1,6 @@
 package com.hknyildz.FlightsApi.Entity;
 
 import jakarta.persistence.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -23,12 +22,10 @@ public class Flight {
     @JoinColumn(name = "ARRIVAL_AIRPORT_CODE", referencedColumnName = "AIRPORT_CODE")
     private Airport arrivalAirport;
 
-    @DateTimeFormat(pattern = "dd-MM-YYYY HH:mm")
-    @Column(name = "ARRIVAL_TIME")
+    @Column(name = "DEPARTURE_TIME")
     private LocalDateTime departureTime;
 
-    @DateTimeFormat(pattern = "dd-MM-YYYY HH:mm")
-    @Column(name = "DEPARTURE_TIME")
+    @Column(name = "ARRIVAL_TIME")
     private LocalDateTime arrivalTime;
 
     @ManyToOne
@@ -43,6 +40,10 @@ public class Flight {
         this.airplane = airplane;
     }
 
+    public Flight() {
+
+    }
+
     private String getDuration() {
         return departureTime.until(arrivalTime, ChronoUnit.MINUTES) + "Minutes";
     }
@@ -51,15 +52,15 @@ public class Flight {
         return departureTime;
     }
 
-    public void setDepartureDate(LocalDateTime departureDate) {
+    public void setDepartureTime(LocalDateTime departureDate) {
         this.departureTime = departureDate;
     }
 
-    public LocalDateTime getArrivalDate() {
+    public LocalDateTime getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalDate(LocalDateTime arrivalDate) {
+    public void setArrivalTime(LocalDateTime arrivalDate) {
         this.arrivalTime = arrivalDate;
     }
 

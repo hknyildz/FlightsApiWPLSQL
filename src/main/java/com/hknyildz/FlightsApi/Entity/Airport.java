@@ -32,6 +32,10 @@ public class Airport {
         this.name = name;
     }
 
+    public Airport() {
+
+    }
+
     public Long getId() {
         return id;
     }
