@@ -12,7 +12,7 @@ public class FlightDto {
 
     private String departureTime;
 
-    private String  arrivalDateTime;
+    private String  arrivalTime;
 
     public String getId() {
         return id;
@@ -54,11 +54,11 @@ public class FlightDto {
         this.departureTime = departureTime;
     }
 
-    public String getArrivalDateTime() {
-        return arrivalDateTime;
+    public String getArrivalTime() {
+        return arrivalTime;
     }
 
-    public void setArrivalDateTime(String arrivalDateTime) {
-        this.arrivalDateTime = arrivalDateTime;
+    public void setArrivalTime(String arrivalDateTime) {
+        this.arrivalTime = arrivalDateTime;
     }
 }

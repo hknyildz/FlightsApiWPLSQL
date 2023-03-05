@@ -49,6 +49,8 @@ public class FlightServiceImpl implements FlightService {
 
         if (arrivalAirport == null || departureAirport == null) {
             throw new IllegalArgumentException("Airport Not Found");
+        } else if (arrivalAirport.getAirportCode().equals(departureAirport.getAirportCode())) {
+            throw new IllegalArgumentException("Airports cannot be same");
         }
 
         Optional<Flight> flight;
@@ -59,7 +61,7 @@ public class FlightServiceImpl implements FlightService {
             flight = Optional.of(new Flight());
         }
 
-        if (!isPlaneLanded(airplane)) {
+        if (isPlaneLanded(airplane)) {
             throw new IllegalStateException("New entry cannot be made until airplane landed.");
         }
 
@@ -73,7 +75,7 @@ public class FlightServiceImpl implements FlightService {
         flight.get().setDepartureAirport(departureAirport.getAirportCode());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime arrivalDateTime = LocalDateTime.parse(flightDto.getArrivalDateTime(), formatter);
+        LocalDateTime arrivalDateTime = LocalDateTime.parse(flightDto.getArrivalTime(), formatter);
         LocalDateTime departureDateTime = LocalDateTime.parse(flightDto.getDepartureTime(),formatter);
 
         flight.get().setArrivalTime(arrivalDateTime);
@@ -86,7 +88,7 @@ public class FlightServiceImpl implements FlightService {
     private boolean isEligibilForFlight(String departureAirportCode, String arrivalAirportCode) {
         int flightCount = flightRepository.getDailyFlightCountBetweenAirports(departureAirportCode, arrivalAirportCode);
 
-        return flightCount <= MAX_DAILY_FLIGHTS;
+        return flightCount < MAX_DAILY_FLIGHTS;
     }
 
     private boolean isPlaneLanded(Airplane airplane) {
