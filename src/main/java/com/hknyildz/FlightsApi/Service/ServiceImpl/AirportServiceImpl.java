@@ -1,8 +1,8 @@
 package com.hknyildz.FlightsApi.Service.ServiceImpl;
 
-import com.hknyildz.FlightsApi.Dao.AirportDao;
 import com.hknyildz.FlightsApi.Model.Dto.AirportDto;
 import com.hknyildz.FlightsApi.Model.Entity.Airport;
+import com.hknyildz.FlightsApi.Repository.AirportRepository;
 import com.hknyildz.FlightsApi.Service.AirportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,25 +14,22 @@ import java.util.List;
 public class AirportServiceImpl implements AirportService {
 
     @Autowired
-    AirportDao airportDao;
+    AirportRepository airportRepository;
 
     @Override
     public List<Airport> getAllList() {
-        return airportDao.getAll();
+        return (List<Airport>) airportRepository.findAll();
     }
 
     @Override
     public HashMap<String, String> createOrUpdate(AirportDto airportDto) {
-        Airport airport = airportDao.findByAirportCode(airportDto.getAirportCode());
+        Airport airport = airportRepository.findByAirportCode(airportDto.getAirportCode());
         if (airport == null) {
-            airport = new Airport();
-            airport.setAirportCode(airportDto.getAirportCode());
-        } else {
             airport = new Airport();
             airport.setAirportCode(airportDto.getAirportCode());
         }
         airport.setName(airportDto.getName());
-        airportDao.createOrUpdateAirport(airport);
+        airportRepository.save(airport);
         HashMap<String, String> map = new HashMap<>();
         map.put("name", airport.getName());
         map.put("AirportCode", airport.getAirportCode());
@@ -43,7 +40,7 @@ public class AirportServiceImpl implements AirportService {
     @Override
     public Airport getByAirportCode(String airportCode) {
 
-        Airport airport = airportDao.findByAirportCode(airportCode);
+        Airport airport = airportRepository.findByAirportCode(airportCode);
         if (airport != null) {
             return airport;
         } else {

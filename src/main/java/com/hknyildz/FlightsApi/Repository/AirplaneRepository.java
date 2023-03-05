@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AirplaneRepository extends CrudRepository<Airplane, Long> {
+public interface AirplaneRepository extends CrudRepository<Airplane, String> {
 
     @Query("select airplane from Airplane airplane where airplane.airplaneCode = :code")
     Airplane findByAirplaneCode(@Param("code") String airplaneCode);

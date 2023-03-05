@@ -14,5 +14,5 @@ public interface AirplaneService {
 
     List<Airplane> getByAirlineCode(String airlineCode);
 
-    int removeByAirplaneCode(String airplaneCode);
+    String removeByAirplaneCode(String airplaneCode);
 }

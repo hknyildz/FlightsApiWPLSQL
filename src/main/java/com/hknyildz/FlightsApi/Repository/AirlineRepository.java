@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface AirlineRepository extends CrudRepository<Airline, Long> {
+public interface AirlineRepository extends CrudRepository<Airline, String> {
 
     @Query("select airline from Airline  airline where airline.airlineCode= :code")
-    Airline findAirlineByAirlineCode(@Param("code")String airlineCode);
+    Airline findAirlineByAirlineCode(@Param("code") String airlineCode);
 }
