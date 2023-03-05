@@ -1,6 +1,6 @@
 package com.hknyildz.FlightsApi.Controller;
 
-import com.hknyildz.FlightsApi.Entity.Airline;
+import com.hknyildz.FlightsApi.Model.Entity.Airline;
 import com.hknyildz.FlightsApi.Repository.AirlineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ public class AirlineController {
     AirlineRepository airlineRepository;
 
     @GetMapping
-    public @ResponseBody List<Airline> getAllAirlines(){
+    public @ResponseBody List<Airline> getAllAirlines() {
 
         return (List<Airline>) airlineRepository.findAll();
     }

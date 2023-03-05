@@ -1,4 +1,4 @@
-package com.hknyildz.FlightsApi.Entity;
+package com.hknyildz.FlightsApi.Model.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -10,19 +10,16 @@ import java.util.Set;
 @Entity
 @Table(name = "T_AIRLINE")
 public class Airline {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String name;
-
-    @Column(name = "AIRLINE_CODE")
-    @NaturalId
-    private String airlineCode;
-
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "airline")
     @JsonIgnore
     Set<Airplane> airplanes = new HashSet<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+    private String name;
+    @Column(name = "AIRLINE_CODE")
+    @NaturalId
+    private String airlineCode;
 
     public Airline(String name, String airlineCode) {
         this.name = name;
@@ -33,7 +30,7 @@ public class Airline {
 
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

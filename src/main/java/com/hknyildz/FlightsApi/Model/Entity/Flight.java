@@ -1,9 +1,8 @@
-package com.hknyildz.FlightsApi.Entity;
+package com.hknyildz.FlightsApi.Model.Entity;
 
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 
 @Entity
@@ -11,16 +10,14 @@ import java.time.temporal.ChronoUnit;
 public class Flight {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "DEPARTURE_AIRPORT_CODE", referencedColumnName = "AIRPORT_CODE")
-    private Airport departureAirport;
+    @Column(name = "DEPARTURE_AIRPORT_CODE")
+    private String departureAirport;
 
-    @ManyToOne
-    @JoinColumn(name = "ARRIVAL_AIRPORT_CODE", referencedColumnName = "AIRPORT_CODE")
-    private Airport arrivalAirport;
+    @Column(name = "ARRIVAL_AIRPORT_CODE")
+    private String arrivalAirport;
 
     @Column(name = "DEPARTURE_TIME")
     private LocalDateTime departureTime;
@@ -28,11 +25,13 @@ public class Flight {
     @Column(name = "ARRIVAL_TIME")
     private LocalDateTime arrivalTime;
 
-    @ManyToOne
+    private String duration;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "AIRPLANE_CODE", referencedColumnName = "AIRPLANE_CODE")
     private Airplane airplane;
 
-    public Flight(Airplane airplane, Airport departureAirport, LocalDateTime departureTime, Airport arrivalAirport, LocalDateTime arrivalTime) {
+    public Flight(Airplane airplane, String departureAirport, LocalDateTime departureTime, String arrivalAirport, LocalDateTime arrivalTime) {
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
         this.departureTime = departureTime;
@@ -44,16 +43,16 @@ public class Flight {
 
     }
 
-    private String getDuration() {
-        return departureTime.until(arrivalTime, ChronoUnit.MINUTES) + "Minutes";
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public LocalDateTime getDepartureDate() {
         return departureTime;
-    }
-
-    public void setDepartureTime(LocalDateTime departureDate) {
-        this.departureTime = departureDate;
     }
 
     public LocalDateTime getArrivalTime() {
@@ -64,24 +63,32 @@ public class Flight {
         this.arrivalTime = arrivalDate;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public Airport getDepartureAirport() {
+    public String getDepartureAirport() {
         return departureAirport;
     }
 
-    public void setDepartureAirport(Airport departureAirport) {
+    public void setDepartureAirport(String departureAirport) {
         this.departureAirport = departureAirport;
     }
 
-    public Airport getArrivalAirport() {
+    public String getArrivalAirport() {
         return arrivalAirport;
     }
 
-    public void setArrivalAirport(Airport arrivalAirport) {
+    public void setArrivalAirport(String arrivalAirport) {
         this.arrivalAirport = arrivalAirport;
+    }
+
+    public LocalDateTime getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(LocalDateTime departureDate) {
+        this.departureTime = departureDate;
     }
 
     public Airplane getAirplane() {

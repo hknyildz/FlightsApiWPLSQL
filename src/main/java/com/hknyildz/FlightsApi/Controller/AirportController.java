@@ -1,27 +1,36 @@
 package com.hknyildz.FlightsApi.Controller;
 
-import com.hknyildz.FlightsApi.Entity.Airport;
-import com.hknyildz.FlightsApi.Repository.AirportRepository;
+import com.hknyildz.FlightsApi.Model.Dto.AirportDto;
+import com.hknyildz.FlightsApi.Model.Entity.Airport;
+import com.hknyildz.FlightsApi.Service.AirportService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("airports")
 public class AirportController {
 
     @Autowired
-    AirportRepository airportRepository;
+    AirportService airportService;
 
     @GetMapping
-    public @ResponseBody List<Airport> getAllAirports(){
+    public @ResponseBody List<Airport> getAllAirports() {
 
-        return (List<Airport>) airportRepository.findAll();
+        return (List<Airport>) airportService.getAllList();
     }
 
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Map<String, String> createOrUpdate(@RequestBody AirportDto airportDto) {
+        return airportService.createOrUpdate(airportDto);
+    }
 
+    @GetMapping("/{airportCode}")
+    public Airport getByAirportCode(@PathVariable("airportCode") String airportCode) {
+        return airportService.getByAirportCode(airportCode);
+    }
 }
