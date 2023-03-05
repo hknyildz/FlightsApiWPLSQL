@@ -45,6 +45,6 @@ public class AirplaneDaoImpl implements AirplaneDao {
     @Override
     public int DeleteAirplane(Airplane airplane) {
         airplaneRepository.delete(airplane);
-        return 0;
+        return 1;
     }
 }

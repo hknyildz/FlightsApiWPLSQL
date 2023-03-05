@@ -1,6 +1,5 @@
 package com.hknyildz.FlightsApi.Repository;
 
-import com.hknyildz.FlightsApi.Dao.AirplaneDao;
 import com.hknyildz.FlightsApi.Model.Entity.Airplane;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

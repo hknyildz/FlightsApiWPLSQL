@@ -28,23 +28,19 @@ public class AirplaneServiceImpl implements AirplaneService {
     @Override
     public Airplane createOrUpdate(AirplaneDto airplaneDto) {
 
-        Airplane airplane = null;
-        if (airplaneDto.getAirplaneCode() != null) {
-            airplane = airplaneDao.findByAirplaneCode(airplaneDto.getAirplaneCode());
-            if (airplane == null) {
-                airplane = new Airplane();
-                airplane.setAirplaneCode(airplaneDto.getAirplaneCode());
-            }
+        Airplane airplane = airplaneDao.findByAirplaneCode(airplaneDto.getAirplaneCode());
+        if (airplane == null) {
+            airplane = new Airplane();
+            airplane.setAirplaneCode(airplaneDto.getAirplaneCode());
         } else {
             airplane = new Airplane();
             airplane.setAirplaneCode(airplaneDto.getAirplaneCode());
         }
         Airline airline = airlineDao.findAirlineByAirlineCode(airplaneDto.getAirlineCode());
-        if(airline!=null){
+        if (airline != null) {
             airplane.setAirline(airline);
-        }
-        else{
-            throw new RuntimeException("There is no airline with code:"+ airplaneDto.getAirlineCode());
+        } else {
+            throw new RuntimeException("There is no airline with code:" + airplaneDto.getAirlineCode());
         }
         return airplaneDao.createOrUpdateAirplane(airplane);
     }
@@ -61,14 +57,12 @@ public class AirplaneServiceImpl implements AirplaneService {
 
     @Override
     public int removeByAirplaneCode(String airplaneCode) {
-        Airplane airplane=airplaneDao.findByAirplaneCode(airplaneCode);
+        Airplane airplane = airplaneDao.findByAirplaneCode(airplaneCode);
 
-        if(airplane!=null)
-        {
+        if (airplane != null) {
             return airplaneDao.DeleteAirplane(airplane);
-        }
-        else{
-            throw new RuntimeException("There is no airplane with code:"+airplaneCode);
+        } else {
+            throw new RuntimeException("There is no airplane with code:" + airplaneCode);
         }
 
 

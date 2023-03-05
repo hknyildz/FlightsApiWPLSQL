@@ -23,13 +23,10 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public HashMap<String, String> createOrUpdate(AirportDto airportDto) {
-        Airport airport = null;
-        if (airportDto.getAirportCode() != null) {
-            airport = airportDao.findByAirportCode(airportDto.getAirportCode());
-            if (airport == null) {
-                airport = new Airport();
-                airport.setAirportCode(airportDto.getAirportCode());
-            }
+        Airport airport = airportDao.findByAirportCode(airportDto.getAirportCode());
+        if (airport == null) {
+            airport = new Airport();
+            airport.setAirportCode(airportDto.getAirportCode());
         } else {
             airport = new Airport();
             airport.setAirportCode(airportDto.getAirportCode());
