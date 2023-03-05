@@ -14,10 +14,10 @@ public class Flight {
     private String id;
 
     @Column(name = "DEPARTURE_AIRPORT_CODE")
-    private String departureAirport;
+    private String departureAirportCode;
 
     @Column(name = "ARRIVAL_AIRPORT_CODE")
-    private String arrivalAirport;
+    private String arrivalAirportCode;
 
     @Column(name = "DEPARTURE_TIME")
     private LocalDateTime departureTime;
@@ -32,8 +32,8 @@ public class Flight {
     private Airplane airplane;
 
     public Flight(Airplane airplane, String departureAirport, LocalDateTime departureTime, String arrivalAirport, LocalDateTime arrivalTime) {
-        this.departureAirport = departureAirport;
-        this.arrivalAirport = arrivalAirport;
+        this.departureAirportCode = departureAirport;
+        this.arrivalAirportCode = arrivalAirport;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.airplane = airplane;
@@ -68,19 +68,19 @@ public class Flight {
     }
 
     public String getDepartureAirport() {
-        return departureAirport;
+        return departureAirportCode;
     }
 
     public void setDepartureAirport(String departureAirport) {
-        this.departureAirport = departureAirport;
+        this.departureAirportCode = departureAirport;
     }
 
     public String getArrivalAirport() {
-        return arrivalAirport;
+        return arrivalAirportCode;
     }
 
     public void setArrivalAirport(String arrivalAirport) {
-        this.arrivalAirport = arrivalAirport;
+        this.arrivalAirportCode = arrivalAirport;
     }
 
     public LocalDateTime getDepartureTime() {

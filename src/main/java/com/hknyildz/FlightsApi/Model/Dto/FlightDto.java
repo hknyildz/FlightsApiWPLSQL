@@ -1,7 +1,5 @@
 package com.hknyildz.FlightsApi.Model.Dto;
 
-import java.time.LocalDateTime;
-
 public class FlightDto {
 
     private String id;
@@ -12,9 +10,9 @@ public class FlightDto {
 
     private String airplaneCode;
 
-    private LocalDateTime departureTime;
+    private String departureTime;
 
-    private LocalDateTime arrivalDateTime;
+    private String  arrivalDateTime;
 
     public String getId() {
         return id;
@@ -48,19 +46,19 @@ public class FlightDto {
         this.airplaneCode = airplaneCode;
     }
 
-    public LocalDateTime getDepartureTime() {
+    public String getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(LocalDateTime departureTime) {
+    public void setDepartureTime(String departureTime) {
         this.departureTime = departureTime;
     }
 
-    public LocalDateTime getArrivalDateTime() {
+    public String getArrivalDateTime() {
         return arrivalDateTime;
     }
 
-    public void setArrivalDateTime(LocalDateTime arrivalDateTime) {
+    public void setArrivalDateTime(String arrivalDateTime) {
         this.arrivalDateTime = arrivalDateTime;
     }
 }

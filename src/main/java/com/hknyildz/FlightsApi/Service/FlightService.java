@@ -11,5 +11,9 @@ public interface FlightService {
 
     Flight createOrUpdate(FlightDto flightDto);
 
-    String deleteById(String flightId);
+    List<Flight> getFlightsByDepartureAirport(String airportCode);
+
+    List<Flight> getFlightsByArrivalAirport(String airportCode);
+
+    void deleteById(String flightId);
 }
