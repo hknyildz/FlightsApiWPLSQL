@@ -1,5 +1,7 @@
 package com.hknyildz.FlightsApi.Service.ServiceImpl;
 
+import com.hknyildz.FlightsApi.Exception.ApiRequestException;
+import com.hknyildz.FlightsApi.Exception.EntityNotFoundException;
 import com.hknyildz.FlightsApi.Model.Dto.FlightDto;
 import com.hknyildz.FlightsApi.Model.Entity.Airplane;
 import com.hknyildz.FlightsApi.Model.Entity.Airport;
@@ -35,28 +37,32 @@ public class FlightServiceImpl implements FlightService {
     @Override
     @Async
     public List<Flight> getAllList() {
-        return (List<Flight>) flightRepository.findAll();
+        List<Flight> flights = (List<Flight>) flightRepository.findAll();
+        if (flights.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+        return flights;
     }
 
     @Override
     public synchronized Flight createOrUpdate(FlightDto flightDto) {
         Airplane airplane = airplaneRepository.findByAirplaneCode(flightDto.getAirplaneCode());
         if (airplane == null) {
-            throw new IllegalStateException("There is no plane with code:" + flightDto.getAirplaneCode());
+            throw new EntityNotFoundException("There is no plane with code:" + flightDto.getAirplaneCode());
         }
         Airport arrivalAirport = airportRepository.findByAirportCode(flightDto.getArrivalAirportCode());
         Airport departureAirport = airportRepository.findByAirportCode(flightDto.getDepartureAirportCode());
 
         if (arrivalAirport == null || departureAirport == null) {
-            throw new IllegalArgumentException("Airport Not Found");
+            throw new EntityNotFoundException("Airport Not Found");
         } else if (arrivalAirport.getAirportCode().equals(departureAirport.getAirportCode())) {
-            throw new IllegalArgumentException("Airports cannot be same");
+            throw new ApiRequestException("Airports cannot be same");
         }
 
         Optional<Flight> flight;
         if (flightDto.getId() != null) {
             flight = flightRepository.findById(flightDto.getId());
-            flight.orElseThrow(() -> new IllegalArgumentException("Flight not found"));
+            flight.orElseThrow(() -> new EntityNotFoundException("Flight not found"));
         } else {
             flight = Optional.of(new Flight());
         }
@@ -67,7 +73,7 @@ public class FlightServiceImpl implements FlightService {
 
 
         if (!isEligibilForFlight(departureAirport.getAirportCode(), arrivalAirport.getAirportCode())) {
-            throw new IllegalArgumentException("There is daily at most 3 flights allowed for an airline between 2 destinations.");
+            throw new IllegalStateException("There is daily at most 3 flights allowed for an airline between 2 destinations.");
         }
 
         flight.get().setAirplane(airplane);
@@ -76,11 +82,11 @@ public class FlightServiceImpl implements FlightService {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime arrivalDateTime = LocalDateTime.parse(flightDto.getArrivalTime(), formatter);
-        LocalDateTime departureDateTime = LocalDateTime.parse(flightDto.getDepartureTime(),formatter);
+        LocalDateTime departureDateTime = LocalDateTime.parse(flightDto.getDepartureTime(), formatter);
 
         flight.get().setArrivalTime(arrivalDateTime);
         flight.get().setDepartureTime(departureDateTime);
-        flight.get().setDuration(ChronoUnit.MINUTES.between(departureDateTime, arrivalDateTime)+"Minutes");
+        flight.get().setDuration(ChronoUnit.MINUTES.between(departureDateTime, arrivalDateTime) + "Minutes");
 
         return flightRepository.save(flight.get());
     }

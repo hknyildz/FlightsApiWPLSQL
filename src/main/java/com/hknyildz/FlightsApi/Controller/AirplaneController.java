@@ -34,14 +34,12 @@ public class AirplaneController {
     }
 
     @GetMapping("/airline={airlineCode}")
-    public List<Airplane> getByAirlineCode(@PathVariable("airlineCode") String airlineCode)
-    {
+    public List<Airplane> getByAirlineCode(@PathVariable("airlineCode") String airlineCode) {
         return airplaneService.getByAirlineCode(airlineCode);
     }
 
-    @RequestMapping(value = {"/{airplaneCode}"},method = RequestMethod.DELETE)
-    public void deleteAirplane(@PathVariable("airplaneCode")String airplaneCode)
-    {
+    @RequestMapping(value = {"/{airplaneCode}"}, method = RequestMethod.DELETE)
+    public void deleteAirplane(@PathVariable("airplaneCode") String airplaneCode) {
         airplaneService.removeByAirplaneCode(airplaneCode);
     }
 

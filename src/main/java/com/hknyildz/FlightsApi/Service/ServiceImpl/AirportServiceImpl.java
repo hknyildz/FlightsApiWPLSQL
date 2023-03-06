@@ -1,5 +1,6 @@
 package com.hknyildz.FlightsApi.Service.ServiceImpl;
 
+import com.hknyildz.FlightsApi.Exception.EntityNotFoundException;
 import com.hknyildz.FlightsApi.Model.Dto.AirportDto;
 import com.hknyildz.FlightsApi.Model.Entity.Airport;
 import com.hknyildz.FlightsApi.Repository.AirportRepository;
@@ -18,7 +19,11 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public List<Airport> getAllList() {
-        return (List<Airport>) airportRepository.findAll();
+        List<Airport> airports = (List<Airport>) airportRepository.findAll();
+        if (airports.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+        return airports;
     }
 
     @Override
@@ -44,7 +49,7 @@ public class AirportServiceImpl implements AirportService {
         if (airport != null) {
             return airport;
         } else {
-            throw new RuntimeException("Airport not found by code:" + airportCode);
+            throw new EntityNotFoundException("Airport not found by code:" + airportCode);
         }
 
     }
