@@ -24,6 +24,8 @@ import java.util.Optional;
 public class FlightServiceImpl implements FlightService {
 
     private final int MAX_DAILY_FLIGHTS = 3;
+
+    private final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm";
     @Autowired
     FlightRepository flightRepository;
 
@@ -71,7 +73,6 @@ public class FlightServiceImpl implements FlightService {
             throw new ApiRequestException("New entry cannot be made until airplane landed.");
         }
 
-
         if (!isEligibilForFlight(departureAirport.getAirportCode(), arrivalAirport.getAirportCode())) {
             throw new ApiRequestException("There is daily at most 3 flights allowed for an airline between 2 destinations.");
         }
@@ -80,15 +81,31 @@ public class FlightServiceImpl implements FlightService {
         flight.get().setArrivalAirport(arrivalAirport.getAirportCode());
         flight.get().setDepartureAirport(departureAirport.getAirportCode());
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATETIME_PATTERN);
         LocalDateTime arrivalDateTime = LocalDateTime.parse(flightDto.getArrivalTime(), formatter);
         LocalDateTime departureDateTime = LocalDateTime.parse(flightDto.getDepartureTime(), formatter);
 
+        if (isPlaneHasFlight(airplane, arrivalDateTime, departureDateTime)) {
+            throw new ApiRequestException("Plane has flight between dates: " + departureDateTime + " and " + departureDateTime);
+        }
+
         flight.get().setArrivalTime(arrivalDateTime);
         flight.get().setDepartureTime(departureDateTime);
-        flight.get().setDuration(ChronoUnit.MINUTES.between(departureDateTime, arrivalDateTime) + "Minutes");
+        Long durationMinutes = ChronoUnit.MINUTES.between(departureDateTime, arrivalDateTime);
+        String duration = ((int) (durationMinutes / 60)) + " Hours : " + ((int) (durationMinutes % 60)) + " Minutes";
+        flight.get().setDuration(duration);
 
         return flightRepository.save(flight.get());
+    }
+
+    private boolean isPlaneHasFlight(Airplane airplane, LocalDateTime arrivalDateTime, LocalDateTime departureDateTime) {
+
+        for (Flight flight : airplane.getFlights()) {
+            if ((flight.getDepartureTime().isAfter(departureDateTime) && flight.getDepartureTime().isBefore(arrivalDateTime)) || (flight.getArrivalTime().isAfter(departureDateTime) && flight.getArrivalTime().isBefore(arrivalDateTime))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isEligibilForFlight(String departureAirportCode, String arrivalAirportCode) {
@@ -98,9 +115,7 @@ public class FlightServiceImpl implements FlightService {
     }
 
     private boolean isPlaneLanded(Airplane airplane) {
-        return airplane.getFlights()
-                .stream()
-                .anyMatch(flight -> flight.getDepartureTime().isBefore(LocalDateTime.now()) && flight.getArrivalTime().isAfter(LocalDateTime.now()));
+        return airplane.getFlights().stream().anyMatch(flight -> flight.getDepartureTime().isBefore(LocalDateTime.now()) && flight.getArrivalTime().isAfter(LocalDateTime.now()));
     }
 
     @Override

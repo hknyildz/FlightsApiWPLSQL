@@ -1,0 +1,396 @@
+{
+	"info": {
+		"_postman_id": "67662579-9082-4493-8f33-b6b257d176b2",
+		"name": "FlightApı",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24807227"
+	},
+	"item": [
+		{
+			"name": "Airport",
+			"item": [
+				{
+					"name": "getByAirportCode",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/airports/HEL",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"airports",
+								"HEL"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllAirports",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/airports",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"airports"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateOrUpdateAirport",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"\",\r\n    \"airportCode\":\"ABC\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/airports",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"airports"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Airplane",
+			"item": [
+				{
+					"name": "getAllPlanes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/airplanes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"airplanes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPlaneByPlaneCode",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/airplanes/GEMINI200",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"airplanes",
+								"GEMINI200"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPlanesByAirlineCode",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/airplanes/airline=THY",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"airplanes",
+								"airline=THY"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddPlane",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"airlineCode\":\"THY\",\r\n    \"airplaneCode\":\"F12\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/airplanes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"airplanes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeletePlane",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/airplanes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"airplanes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Airline",
+			"item": [
+				{
+					"name": "getAllAirlines",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/airlines",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"airlines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAirlineByAirlineCode",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/airlines/ACA",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"airlines",
+								"ACA"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createAirline",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Pegasus\",\r\n    \"airlineCode\":\"PGS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/airlines",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"airlines"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Flight",
+			"item": [
+				{
+					"name": "getAllFlights",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/flights",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"flights"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createOrUpdateFlight",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"departureAirportCode\":\"DXB\",\r\n    \"arrivalAirportCode\":\"GRT\",\r\n    \"airplaneCode\":\"SKYMARKS\",\r\n    \"departureTime\":\"2023-03-05 22:00\",\r\n    \"arrivalTime\":\"2023-03-06 05:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/flights",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"flights"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getFlightByArrivalAirport",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/flights/arrival=DEX",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"flights",
+								"arrival=DEX"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getFlightByDeparturelAirport",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/flights/arrival=DEX",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"flights",
+								"arrival=DEX"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteFlightById",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/flights/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"flights",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "localhost",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/flights",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flights"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
