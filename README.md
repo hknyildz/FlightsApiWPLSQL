@@ -82,7 +82,7 @@ Also postman collection can be imported from (src/main/resources/FlightApı.post
 
 This application is using H2 embedded database, which (database as well as data) will be removed from memory when the application goes down.
 
-While the application is running, you can access the [H2 Console](http://localhost:8080/console) if you want to see the data outside the application. 
+While the application is running, you can access the [H2 Console](http://localhost:8080/h2-console) if you want to see the data outside the application. 
 
 You can connect to the DB using the JDBC URL: 'jdbc:h2:file:./data/fileDb' and user 'sa' with NO password. 
 
