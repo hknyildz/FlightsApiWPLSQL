@@ -68,12 +68,12 @@ public class FlightServiceImpl implements FlightService {
         }
 
         if (isPlaneLanded(airplane)) {
-            throw new IllegalStateException("New entry cannot be made until airplane landed.");
+            throw new ApiRequestException("New entry cannot be made until airplane landed.");
         }
 
 
         if (!isEligibilForFlight(departureAirport.getAirportCode(), arrivalAirport.getAirportCode())) {
-            throw new IllegalStateException("There is daily at most 3 flights allowed for an airline between 2 destinations.");
+            throw new ApiRequestException("There is daily at most 3 flights allowed for an airline between 2 destinations.");
         }
 
         flight.get().setAirplane(airplane);
