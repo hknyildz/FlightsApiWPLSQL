@@ -8,9 +8,10 @@ Flight Management REST API project that includes input validation, synchronized 
   - Creating And Updating Flight
     - If the id is sent in the request, the flight belonging to that id is updated, if the id is not given, a new flight is 	created with the information given.
     - Create and Update operations processes synchronized
-    - There is 2 business rules
+    -  business rules
       - 1. There must be daily at most 3 flights for an airline between 2 destinations.
       - 2. New entry cannot be made until airplane landed
+      - 3. If the plane has a flight between the given dates, it cannot create a new flight
   - List all flights
   - Filtering flights by arrival and departure airport
   - Deleting flight by id
@@ -33,6 +34,7 @@ Flight Management REST API project that includes input validation, synchronized 
 2. Spring Boot (Application Platform)
 3. Spring Data JPA (Data persistence)
 4. H2 (Database)
+5. Swagger (Documentation)
 
 ## Getting Started
 
