@@ -3,6 +3,7 @@ package com.hknyildz.FlightsApi.Controller;
 import com.hknyildz.FlightsApi.Model.Dto.AirportDto;
 import com.hknyildz.FlightsApi.Model.Entity.Airport;
 import com.hknyildz.FlightsApi.Service.AirportService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +21,12 @@ public class AirportController {
     @GetMapping
     public @ResponseBody List<Airport> getAllAirports() {
 
-        return (List<Airport>) airportService.getAllList();
+        return airportService.getAllList();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Map<String, String> createOrUpdate(@RequestBody AirportDto airportDto) {
+    public Map<String, String> createOrUpdate(@Valid @RequestBody AirportDto airportDto) {
         return airportService.createOrUpdate(airportDto);
     }
 

@@ -3,6 +3,7 @@ package com.hknyildz.FlightsApi.Controller;
 import com.hknyildz.FlightsApi.Model.Dto.FlightDto;
 import com.hknyildz.FlightsApi.Model.Entity.Flight;
 import com.hknyildz.FlightsApi.Service.FlightService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class FlightController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Flight createOrUpdate(@RequestBody FlightDto flightDto) {
+    public Flight createOrUpdate(@Valid @RequestBody FlightDto flightDto) {
         return flightService.createOrUpdate(flightDto);
     }
 

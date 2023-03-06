@@ -3,6 +3,7 @@ package com.hknyildz.FlightsApi.Controller;
 import com.hknyildz.FlightsApi.Model.Dto.AirlineDto;
 import com.hknyildz.FlightsApi.Model.Entity.Airline;
 import com.hknyildz.FlightsApi.Service.AirlineService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +20,12 @@ public class AirlineController {
     @GetMapping
     public @ResponseBody List<Airline> getAllAirlines() {
 
-        return (List<Airline>) airlineService.getAllList();
+        return airlineService.getAllList();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Airline createOrUpdate(@RequestBody AirlineDto airlineDto) {
+    public Airline createOrUpdate(@Valid @RequestBody AirlineDto airlineDto) {
         return airlineService.createOrUpdate(airlineDto);
     }
 
