@@ -10,7 +10,7 @@ public interface AirportService {
 
     List<Airport> getAllList();
 
-    HashMap<String, String> createOrUpdate(AirportDto airportDto);
+    Airport createOrUpdate(AirportDto airportDto);
 
     Airport getByAirportCode(String airportCode);
 

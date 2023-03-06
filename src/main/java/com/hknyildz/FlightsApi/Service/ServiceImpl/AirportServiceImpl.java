@@ -27,19 +27,14 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public HashMap<String, String> createOrUpdate(AirportDto airportDto) {
+    public Airport createOrUpdate(AirportDto airportDto) {
         Airport airport = airportRepository.findByAirportCode(airportDto.getAirportCode());
         if (airport == null) {
             airport = new Airport();
             airport.setAirportCode(airportDto.getAirportCode());
         }
         airport.setName(airportDto.getName());
-        airportRepository.save(airport);
-        HashMap<String, String> map = new HashMap<>();
-        map.put("name", airport.getName());
-        map.put("AirportCode", airport.getAirportCode());
-        map.put("status", "201");
-        return map;
+        return airportRepository.save(airport);
     }
 
     @Override

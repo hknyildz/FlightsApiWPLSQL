@@ -26,7 +26,7 @@ public class AirportController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Map<String, String> createOrUpdate(@Valid @RequestBody AirportDto airportDto) {
+    public Airport createOrUpdate(@Valid @RequestBody AirportDto airportDto) {
         return airportService.createOrUpdate(airportDto);
     }
 
