@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("airplanes")
+@RequestMapping(value = "airplanes",produces = "application/json")
 public class AirplaneController {
 
     @Autowired
@@ -25,8 +25,8 @@ public class AirplaneController {
         return airplaneService.getByAirplaneCode(airplaneCode);
     }
 
-    @GetMapping("/airline={airlineCode}")
-    public List<Airplane> getByAirlineCode(@PathVariable("airlineCode") String airlineCode) {
+    @GetMapping(params = "airline")
+    public List<Airplane> getByAirlineCode(@RequestParam("airline") String airlineCode) {
         return airplaneService.getByAirlineCode(airlineCode);
     }
 

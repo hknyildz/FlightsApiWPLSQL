@@ -10,8 +10,7 @@ Flight Management REST API project that includes input validation, synchronized 
     - Create and Update operations processes synchronized
     -  business rules
       - 1. There must be daily at most 3 flights for an airline between 2 destinations.
-      - 2. New entry cannot be made until airplane landed
-      - 3. If the plane has a flight between the given dates, it cannot create a new flight
+      - 2. If the plane has a flight between the given dates, it cannot create a new flight
   - List all flights
   - Filtering flights by arrival and departure airport
   - Deleting flight by id
@@ -71,8 +70,8 @@ The home screen will give you relevant links to navigate, including the API end-
 	
 #### Test the URLs
 	
-    1. [http://localhost:8080/flights/departure=GRU]
-    2. [http://localhost:8080/airplanes/airline=AAL]
+    1. [http://localhost:8080/flights?departure=GRU]
+    2. [http://localhost:8080/airplanes?airline=AAL]
     
 ## API Documentation
 API documentation can be accessed via [Swagger UI](http://localhost:8080/swagger-ui.html) 

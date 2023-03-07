@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("airlines")
+@RequestMapping(value = "airlines",produces = "application/json")
 public class AirlineController {
 
     @Autowired

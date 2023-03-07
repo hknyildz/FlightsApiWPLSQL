@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("flights")
+@RequestMapping(value = "flights",produces = "application/json")
 public class FlightController {
 
     @Autowired
@@ -19,7 +19,6 @@ public class FlightController {
 
     @GetMapping
     public @ResponseBody List<FlightDto> getAllFlights() {
-
         return flightService.getAllList();
     }
 
@@ -29,13 +28,13 @@ public class FlightController {
         return flightService.createOrUpdate(flightDto);
     }
 
-    @GetMapping("/arrival={airportCode}")
-    public List<FlightDto> getByArrivalAirportCode(@PathVariable("airportCode") String airportCode) {
+    @GetMapping(params = "arrival")
+    public List<FlightDto> getByArrivalAirportCode(@RequestParam("arrival") String airportCode) {
         return flightService.getFlightsByArrivalAirport(airportCode);
     }
 
-    @GetMapping("/departure={airportCode}")
-    public List<FlightDto> getByDepartureAirportCode(@PathVariable("airportCode") String airportCode) {
+    @GetMapping(params = "departure")
+    public List<FlightDto> getByDepartureAirportCode(@RequestParam("departure") String airportCode) {
         return flightService.getFlightsByDepartureAirport(airportCode);
     }
 
