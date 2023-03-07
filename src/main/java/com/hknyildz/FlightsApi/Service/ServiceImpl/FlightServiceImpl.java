@@ -18,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class FlightServiceImpl implements FlightService {
@@ -26,15 +27,14 @@ public class FlightServiceImpl implements FlightService {
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    private ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();
+
     @Autowired
     FlightRepository flightRepository;
-
     @Autowired
     AirplaneRepository airplaneRepository;
-
     @Autowired
     AirportRepository airportRepository;
-
 
     @Override
     public List<FlightDto> getAllList() {
@@ -46,22 +46,26 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public synchronized Flight createOrUpdate(FlightDto flightDto) {
+    public Flight createOrUpdate(FlightDto flightDto) {
+        synchronized (getLock(flightDto.getDepartureAirportCode())) {
         Airport arrivalAirport = airportRepository.findByAirportCode(flightDto.getArrivalAirportCode());
         Airport departureAirport = airportRepository.findByAirportCode(flightDto.getDepartureAirportCode());
         Airplane airplane = airplaneRepository.findByAirplaneCode(flightDto.getAirplaneCode());
         Flight flight;
         checkValidations(airplane, arrivalAirport, departureAirport);
-
-        if (flightDto.getId() != null) {
-            flight = flightRepository.findById(flightDto.getId()).orElseThrow(() -> new EntityNotFoundException("Flight not found"));
-        } else {
-            flight = new Flight();
+            getLock(flightDto.getDepartureAirportCode());
+            if (flightDto.getId() != null) {
+                flight = flightRepository.findById(flightDto.getId()).orElseThrow(() -> new EntityNotFoundException("Flight not found"));
+            } else {
+                flight = new Flight();
+            }
+            dtoToEntity(flight, flightDto, airplane);
+            checkBusinessRules(flight);
+            flightRepository.save(flight);
+            locks.remove(flightDto.getDepartureAirportCode());
+            locks.remove(flightDto.getDepartureAirportCode());
+            return flight;
         }
-
-        dtoToEntity(flight, flightDto, airplane);
-        checkBusinessRules(flight);
-        return flightRepository.save(flight); //pessimistic lock plane and airport or synchronized thread
     }
 
     @Override
@@ -79,6 +83,12 @@ public class FlightServiceImpl implements FlightService {
     public void deleteById(String flightId) {
         flightRepository.deleteById(flightId);
     }
+
+    private Object getLock(String code) {
+        locks.putIfAbsent(code, new Object());
+        return locks.get(code);
+    }
+
 
     private void checkBusinessRules(Flight flight) {
         checkPlaneHasFlight(flight.getAirplane(), flight.getArrivalTime(), flight.getDepartureTime());
@@ -101,13 +111,7 @@ public class FlightServiceImpl implements FlightService {
 
     private FlightDto entityToDto(Flight flight) {
         String durationString = ((int) (flight.getDuration() / 60)) + " Hours : " + ((int) (flight.getDuration() % 60)) + " Minutes";
-        return new FlightDto(flight.getId(),
-                flight.getDepartureAirport(),
-                flight.getArrivalAirport(),
-                flight.getAirplane().getAirplaneCode(),
-                flight.getDepartureTime().format(formatter),
-                flight.getArrivalTime().format(formatter),
-                durationString);
+        return new FlightDto(flight.getId(), flight.getDepartureAirport(), flight.getArrivalAirport(), flight.getAirplane().getAirplaneCode(), flight.getDepartureTime().format(formatter), flight.getArrivalTime().format(formatter), durationString);
 
     }
 
