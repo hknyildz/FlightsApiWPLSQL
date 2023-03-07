@@ -16,14 +16,12 @@ Flight Management REST API project that includes input validation, synchronized 
   - Filtering flights by arrival and departure airport
   - Deleting flight by id
 - AIRPORT
-  - Creating And Updating Airport
   - Filtering airports by airport code
   - List all airports
 - AIRPLANE
-  - Creating And Updating Airplane
+  - List all airplanes
   - Filtering airplanes by airplane and airline codes
 - AIRLINE
-  - Creating And Updating airline
   - List all airlines
   - Filtering airlines by airline code
 
@@ -42,7 +40,7 @@ The source code can be checked out to your local and then build and run the appl
 
 ### Prerequisites
 1. Java 17
-2. Maven 3
+2. Maven 4
 3. Git
 
 ### Installing & Running
