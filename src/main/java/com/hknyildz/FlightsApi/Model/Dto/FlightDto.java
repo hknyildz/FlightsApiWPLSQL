@@ -1,6 +1,7 @@
 package com.hknyildz.FlightsApi.Model.Dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 
 public class FlightDto {
@@ -21,6 +22,27 @@ public class FlightDto {
 
     @NotBlank(message = "arrivalTime is required")
     private String arrivalTime;
+
+    @Null(message = "The duration field cannot be entered manually.")
+    private String duration;
+
+    public FlightDto(String id, String departureAirportCode, String arrivalAirportCode, String airplaneCode, String departureTime, String arrivalTime, String duration) {
+        this.id = id;
+        this.departureAirportCode = departureAirportCode;
+        this.arrivalAirportCode = arrivalAirportCode;
+        this.airplaneCode = airplaneCode;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.duration = duration;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
 
     public String getId() {
         return id;

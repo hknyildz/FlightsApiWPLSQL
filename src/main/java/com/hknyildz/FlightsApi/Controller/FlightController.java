@@ -18,7 +18,7 @@ public class FlightController {
     FlightService flightService;
 
     @GetMapping
-    public @ResponseBody List<Flight> getAllFlights() {
+    public @ResponseBody List<FlightDto> getAllFlights() {
 
         return flightService.getAllList();
     }
@@ -30,12 +30,12 @@ public class FlightController {
     }
 
     @GetMapping("/arrival={airportCode}")
-    public List<Flight> getByArrivalAirportCode(@PathVariable("airportCode") String airportCode) {
+    public List<FlightDto> getByArrivalAirportCode(@PathVariable("airportCode") String airportCode) {
         return flightService.getFlightsByArrivalAirport(airportCode);
     }
 
     @GetMapping("/departure={airportCode}")
-    public List<Flight> getByDepartureAirportCode(@PathVariable("airportCode") String airportCode) {
+    public List<FlightDto> getByDepartureAirportCode(@PathVariable("airportCode") String airportCode) {
         return flightService.getFlightsByDepartureAirport(airportCode);
     }
 

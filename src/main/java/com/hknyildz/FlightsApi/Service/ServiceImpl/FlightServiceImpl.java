@@ -11,21 +11,21 @@ import com.hknyildz.FlightsApi.Repository.AirportRepository;
 import com.hknyildz.FlightsApi.Repository.FlightRepository;
 import com.hknyildz.FlightsApi.Service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class FlightServiceImpl implements FlightService {
 
     private final int MAX_DAILY_FLIGHTS = 3;
 
-    private final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm";
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     @Autowired
     FlightRepository flightRepository;
 
@@ -37,100 +37,119 @@ public class FlightServiceImpl implements FlightService {
 
 
     @Override
-    @Async
-    public List<Flight> getAllList() {
+    public List<FlightDto> getAllList() {
         List<Flight> flights = (List<Flight>) flightRepository.findAll();
         if (flights.isEmpty()) {
             throw new EntityNotFoundException();
         }
-        return flights;
+        return entityListToDtoList(flights);
     }
 
     @Override
     public synchronized Flight createOrUpdate(FlightDto flightDto) {
-        Airplane airplane = airplaneRepository.findByAirplaneCode(flightDto.getAirplaneCode());
-        if (airplane == null) {
-            throw new EntityNotFoundException("There is no plane with code:" + flightDto.getAirplaneCode());
-        }
         Airport arrivalAirport = airportRepository.findByAirportCode(flightDto.getArrivalAirportCode());
         Airport departureAirport = airportRepository.findByAirportCode(flightDto.getDepartureAirportCode());
+        Airplane airplane = airplaneRepository.findByAirplaneCode(flightDto.getAirplaneCode());
+        Flight flight;
+        checkValidations(airplane, arrivalAirport, departureAirport);
 
-        if (arrivalAirport == null || departureAirport == null) {
-            throw new EntityNotFoundException("Airport Not Found");
-        } else if (arrivalAirport.getAirportCode().equals(departureAirport.getAirportCode())) {
-            throw new ApiRequestException("Airports cannot be same");
-        }
-
-        Optional<Flight> flight;
         if (flightDto.getId() != null) {
-            flight = flightRepository.findById(flightDto.getId());
-            flight.orElseThrow(() -> new EntityNotFoundException("Flight not found"));
+            flight = flightRepository.findById(flightDto.getId()).orElseThrow(() -> new EntityNotFoundException("Flight not found"));
         } else {
-            flight = Optional.of(new Flight());
+            flight = new Flight();
         }
 
-        if (isPlaneLanded(airplane)) {
-            throw new ApiRequestException("New entry cannot be made until airplane landed.");
-        }
-
-        if (!isEligibilForFlight(departureAirport.getAirportCode(), arrivalAirport.getAirportCode())) {
-            throw new ApiRequestException("There is daily at most 3 flights allowed for an airline between 2 destinations.");
-        }
-
-        flight.get().setAirplane(airplane);
-        flight.get().setArrivalAirport(arrivalAirport.getAirportCode());
-        flight.get().setDepartureAirport(departureAirport.getAirportCode());
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATETIME_PATTERN);
-        LocalDateTime arrivalDateTime = LocalDateTime.parse(flightDto.getArrivalTime(), formatter);
-        LocalDateTime departureDateTime = LocalDateTime.parse(flightDto.getDepartureTime(), formatter);
-
-        if (isPlaneHasFlight(airplane, arrivalDateTime, departureDateTime)) {
-            throw new ApiRequestException("Plane has flight between dates: " + departureDateTime + " and " + departureDateTime);
-        }
-
-        flight.get().setArrivalTime(arrivalDateTime);
-        flight.get().setDepartureTime(departureDateTime);
-        Long durationMinutes = ChronoUnit.MINUTES.between(departureDateTime, arrivalDateTime);
-        String duration = ((int) (durationMinutes / 60)) + " Hours : " + ((int) (durationMinutes % 60)) + " Minutes";
-        flight.get().setDuration(duration);
-
-        return flightRepository.save(flight.get());
-    }
-
-    private boolean isPlaneHasFlight(Airplane airplane, LocalDateTime arrivalDateTime, LocalDateTime departureDateTime) {
-
-        for (Flight flight : airplane.getFlights()) {
-            if ((flight.getDepartureTime().isAfter(departureDateTime) && flight.getDepartureTime().isBefore(arrivalDateTime)) || (flight.getArrivalTime().isAfter(departureDateTime) && flight.getArrivalTime().isBefore(arrivalDateTime))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isEligibilForFlight(String departureAirportCode, String arrivalAirportCode) {
-        int flightCount = flightRepository.getDailyFlightCountBetweenAirports(departureAirportCode, arrivalAirportCode);
-
-        return flightCount < MAX_DAILY_FLIGHTS;
-    }
-
-    private boolean isPlaneLanded(Airplane airplane) {
-        return airplane.getFlights().stream().anyMatch(flight -> flight.getDepartureTime().isBefore(LocalDateTime.now()) && flight.getArrivalTime().isAfter(LocalDateTime.now()));
+        dtoToEntity(flight, flightDto, airplane);
+        checkBusinessRules(flight);
+        return flightRepository.save(flight); //pessimistic lock plane and airport or synchronized thread
     }
 
     @Override
-    public List<Flight> getFlightsByDepartureAirport(String airportCode) {
+    public List<FlightDto> getFlightsByDepartureAirport(String airportCode) {
 
-        return flightRepository.findByDepartureAirportCode(airportCode);
+        return entityListToDtoList(flightRepository.findByDepartureAirportCode(airportCode));
     }
 
     @Override
-    public List<Flight> getFlightsByArrivalAirport(String airportCode) {
-        return flightRepository.findByArrivalAirportCode(airportCode);
+    public List<FlightDto> getFlightsByArrivalAirport(String airportCode) {
+        return entityListToDtoList(flightRepository.findByArrivalAirportCode(airportCode));
     }
 
     @Override
     public void deleteById(String flightId) {
         flightRepository.deleteById(flightId);
     }
+
+    private void checkBusinessRules(Flight flight) {
+        checkPlaneHasFlight(flight.getAirplane(), flight.getArrivalTime(), flight.getDepartureTime());
+        checkEligibilityForFlight(flight.getDepartureAirport(), flight.getArrivalAirport(), flight.getDepartureTime());
+    }
+
+    private void dtoToEntity(Flight flight, FlightDto flightDto, Airplane airplane) {
+
+        LocalDateTime arrivalDateTime = LocalDateTime.parse(flightDto.getArrivalTime(), formatter);
+        LocalDateTime departureDateTime = LocalDateTime.parse(flightDto.getDepartureTime(), formatter);
+        Long duration = ChronoUnit.MINUTES.between(departureDateTime, arrivalDateTime);
+
+        flight.setAirplane(airplane);
+        flight.setArrivalAirport(flightDto.getArrivalAirportCode());
+        flight.setDepartureAirport(flightDto.getArrivalAirportCode());
+        flight.setArrivalTime(arrivalDateTime);
+        flight.setDepartureTime(departureDateTime);
+        flight.setDuration(duration);
+    }
+
+    private FlightDto entityToDto(Flight flight) {
+        String durationString = ((int) (flight.getDuration() / 60)) + " Hours : " + ((int) (flight.getDuration() % 60)) + " Minutes";
+        return new FlightDto(flight.getId(),
+                flight.getDepartureAirport(),
+                flight.getArrivalAirport(),
+                flight.getAirplane().getAirplaneCode(),
+                flight.getDepartureTime().format(formatter),
+                flight.getArrivalTime().format(formatter),
+                durationString);
+
+    }
+
+    private List<FlightDto> entityListToDtoList(List<Flight> flights) {
+        List<FlightDto> flightDtoList = new ArrayList<>();
+        for (Flight flight : flights) {
+            flightDtoList.add(entityToDto(flight));
+        }
+        return flightDtoList;
+    }
+
+
+    private void checkValidations(Airplane airplane, Airport arrivalAirport, Airport departureAirport) {
+
+        if (airplane == null) {
+            throw new EntityNotFoundException("There is no plane with given code");
+        }
+
+        if (arrivalAirport == null || departureAirport == null) {
+            throw new EntityNotFoundException("Airport Not Found");
+        }
+
+        if (arrivalAirport.getAirportCode().equals(departureAirport.getAirportCode())) {
+            throw new ApiRequestException("Airports cannot be same");
+        }
+    }
+
+    private void checkPlaneHasFlight(Airplane airplane, LocalDateTime arrivalDateTime, LocalDateTime departureDateTime) {
+
+        for (Flight flight : airplane.getFlights()) {
+            if (flight.getDepartureTime().isEqual(departureDateTime) || (departureDateTime.isAfter(flight.getDepartureTime()) && departureDateTime.isBefore(flight.getArrivalTime())) || (arrivalDateTime.isAfter(flight.getDepartureTime()) && arrivalDateTime.isBefore(flight.getArrivalTime()))) {
+                throw new ApiRequestException("Plane has flight between dates: " + flight.getDepartureTime() + " and " + flight.getArrivalTime());
+            }
+        }
+    }
+
+    private void checkEligibilityForFlight(String departureAirportCode, String arrivalAirportCode, LocalDateTime departureDateTime) {
+        int flightCount = flightRepository.getDailyFlightCountBetweenAirports(departureAirportCode, arrivalAirportCode, departureDateTime.toLocalDate()); // gunluk hesaplama eksik
+        if (flightCount >= MAX_DAILY_FLIGHTS) {
+            throw new ApiRequestException("There is daily at most 3 flights allowed for an airline between 2 destinations.");
+        }
+    }
+
+
 }

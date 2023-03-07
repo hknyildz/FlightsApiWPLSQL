@@ -7,13 +7,13 @@ import com.hknyildz.FlightsApi.Model.Entity.Flight;
 import java.util.List;
 
 public interface FlightService {
-    List<Flight> getAllList();
+    List<FlightDto> getAllList();
 
     Flight createOrUpdate(FlightDto flightDto);
 
-    List<Flight> getFlightsByDepartureAirport(String airportCode);
+    List<FlightDto> getFlightsByDepartureAirport(String airportCode);
 
-    List<Flight> getFlightsByArrivalAirport(String airportCode);
+    List<FlightDto> getFlightsByArrivalAirport(String airportCode);
 
     void deleteById(String flightId);
 }

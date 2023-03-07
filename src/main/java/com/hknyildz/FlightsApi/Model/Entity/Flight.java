@@ -25,7 +25,7 @@ public class Flight {
     @Column(name = "ARRIVAL_TIME")
     private LocalDateTime arrivalTime;
 
-    private String duration;
+    private Long duration;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "AIRPLANE_CODE", referencedColumnName = "AIRPLANE_CODE")
@@ -43,15 +43,15 @@ public class Flight {
 
     }
 
-    public String getDuration() {
+    public Long getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(Long duration) {
         this.duration = duration;
     }
 
-    public LocalDateTime getDepartureDate() {
+    public LocalDateTime getDepartureTime() {
         return departureTime;
     }
 
@@ -83,9 +83,6 @@ public class Flight {
         this.arrivalAirportCode = arrivalAirport;
     }
 
-    public LocalDateTime getDepartureTime() {
-        return departureTime;
-    }
 
     public void setDepartureTime(LocalDateTime departureDate) {
         this.departureTime = departureDate;
