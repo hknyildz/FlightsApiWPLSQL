@@ -1,7 +1,6 @@
 package com.hknyildz.FlightsApi.Service.ServiceImpl;
 
 import com.hknyildz.FlightsApi.Exception.EntityNotFoundException;
-import com.hknyildz.FlightsApi.Model.Dto.AirlineDto;
 import com.hknyildz.FlightsApi.Model.Entity.Airline;
 import com.hknyildz.FlightsApi.Repository.AirlineRepository;
 import com.hknyildz.FlightsApi.Service.AirlineService;
@@ -23,18 +22,6 @@ public class AirlineServiceImpl implements AirlineService {
             throw new EntityNotFoundException();
         }
         return airlines;
-    }
-
-    @Override
-    public Airline createOrUpdate(AirlineDto airlineDto) {
-
-        Airline airline = airlineRepository.findAirlineByAirlineCode(airlineDto.getAirlineCode());
-        if (airline == null) {
-            airline = new Airline();
-            airline.setAirlineCode(airline.getAirlineCode());
-        }
-        airline.setName(airlineDto.getName());
-        return airlineRepository.save(airline);
     }
 
     @Override

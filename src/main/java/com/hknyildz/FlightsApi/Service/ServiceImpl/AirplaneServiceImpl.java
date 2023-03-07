@@ -1,8 +1,6 @@
 package com.hknyildz.FlightsApi.Service.ServiceImpl;
 
 import com.hknyildz.FlightsApi.Exception.EntityNotFoundException;
-import com.hknyildz.FlightsApi.Model.Dto.AirplaneDto;
-import com.hknyildz.FlightsApi.Model.Entity.Airline;
 import com.hknyildz.FlightsApi.Model.Entity.Airplane;
 import com.hknyildz.FlightsApi.Repository.AirlineRepository;
 import com.hknyildz.FlightsApi.Repository.AirplaneRepository;
@@ -30,23 +28,6 @@ public class AirplaneServiceImpl implements AirplaneService {
     }
 
     @Override
-    public Airplane createOrUpdate(AirplaneDto airplaneDto) {
-
-        Airplane airplane = airplaneRepository.findByAirplaneCode(airplaneDto.getAirplaneCode());
-        if (airplane == null) {
-            airplane = new Airplane();
-            airplane.setAirplaneCode(airplaneDto.getAirplaneCode());
-        }
-        Airline airline = airlineRepository.findAirlineByAirlineCode(airplaneDto.getAirlineCode());
-        if (airline != null) {
-            airplane.setAirline(airline);
-        } else {
-            throw new EntityNotFoundException("There is no airline with code:" + airplaneDto.getAirlineCode());
-        }
-        return airplaneRepository.save(airplane);
-    }
-
-    @Override
     public Airplane getByAirplaneCode(String airplaneCode) {
         Airplane airplane = airplaneRepository.findByAirplaneCode(airplaneCode);
         if (airplane == null) {
@@ -64,18 +45,5 @@ public class AirplaneServiceImpl implements AirplaneService {
         return airplanes;
     }
 
-    @Override
-    public String removeByAirplaneCode(String airplaneCode) {
-        Airplane airplane = airplaneRepository.findByAirplaneCode(airplaneCode);
-
-        if (airplane != null) {
-            airplaneRepository.delete(airplane);
-            return "SUCCESS";
-        } else {
-            throw new EntityNotFoundException("There is no airplane with code:" + airplaneCode);
-        }
-
-
-    }
 
 }

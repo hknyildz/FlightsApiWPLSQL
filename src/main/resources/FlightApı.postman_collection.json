@@ -47,34 +47,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "CreateOrUpdateAirport",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"\",\r\n    \"airportCode\":\"ABC\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/airports",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"airports"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -139,53 +111,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "AddPlane",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"airlineCode\":\"THY\",\r\n    \"airplaneCode\":\"F12\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/airplanes",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"airplanes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DeletePlane",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/airplanes",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"airplanes"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -230,34 +155,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "createAirline",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"Pegasus\",\r\n    \"airlineCode\":\"PGS\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/airlines",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"airlines"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -290,7 +187,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"departureAirportCode\":\"DXB\",\r\n    \"arrivalAirportCode\":\"GRT\",\r\n    \"airplaneCode\":\"SKYMARKS\",\r\n    \"departureTime\":\"2023-03-05 22:00\",\r\n    \"arrivalTime\":\"2023-03-06 05:00\"\r\n}",
+							"raw": "{\r\n    \"departureAirportCode\":\"DXB\",\r\n    \"arrivalAirportCode\":\"GRT\",\r\n    \"airplaneCode\":\"GEMINI200\",\r\n    \"departureTime\":\"2023-03-18 13:30\",\r\n    \"arrivalTime\":\"2023-03-18 14:30\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -372,25 +269,6 @@
 					"response": []
 				}
 			]
-		},
-		{
-			"name": "localhost",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/flights",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"flights"
-					]
-				}
-			},
-			"response": []
 		}
 	]
 }
