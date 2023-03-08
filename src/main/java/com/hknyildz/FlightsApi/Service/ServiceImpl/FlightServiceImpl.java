@@ -48,12 +48,14 @@ public class FlightServiceImpl implements FlightService {
     @Override
     public Flight createOrUpdate(FlightDto flightDto) {
         synchronized (getLock(flightDto.getDepartureAirportCode())) {
-        Airport arrivalAirport = airportRepository.findByAirportCode(flightDto.getArrivalAirportCode());
-        Airport departureAirport = airportRepository.findByAirportCode(flightDto.getDepartureAirportCode());
-        Airplane airplane = airplaneRepository.findByAirplaneCode(flightDto.getAirplaneCode());
-        Flight flight;
-        checkValidations(airplane, arrivalAirport, departureAirport);
             getLock(flightDto.getDepartureAirportCode());
+
+            Airport arrivalAirport = airportRepository.findByAirportCode(flightDto.getArrivalAirportCode());
+            Airport departureAirport = airportRepository.findByAirportCode(flightDto.getDepartureAirportCode());
+            Airplane airplane = airplaneRepository.findByAirplaneCode(flightDto.getAirplaneCode());
+            Flight flight;
+            checkValidations(airplane, arrivalAirport, departureAirport);
+
             if (flightDto.getId() != null) {
                 flight = flightRepository.findById(flightDto.getId()).orElseThrow(() -> new EntityNotFoundException("Flight not found"));
             } else {
