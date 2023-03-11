@@ -48,25 +48,27 @@ public class FlightServiceImpl implements FlightService {
     @Override
     public Flight createOrUpdate(FlightDto flightDto) {
         synchronized (getLock(flightDto.getDepartureAirportCode())) {
-            getLock(flightDto.getDepartureAirportCode());
+            try {
+                getLock(flightDto.getArrivalAirportCode());
+                Airport arrivalAirport = airportRepository.findByAirportCode(flightDto.getArrivalAirportCode());
+                Airport departureAirport = airportRepository.findByAirportCode(flightDto.getDepartureAirportCode());
+                Airplane airplane = airplaneRepository.findByAirplaneCode(flightDto.getAirplaneCode());
+                Flight flight;
+                checkValidations(airplane, arrivalAirport, departureAirport);
 
-            Airport arrivalAirport = airportRepository.findByAirportCode(flightDto.getArrivalAirportCode());
-            Airport departureAirport = airportRepository.findByAirportCode(flightDto.getDepartureAirportCode());
-            Airplane airplane = airplaneRepository.findByAirplaneCode(flightDto.getAirplaneCode());
-            Flight flight;
-            checkValidations(airplane, arrivalAirport, departureAirport);
-
-            if (flightDto.getId() != null) {
-                flight = flightRepository.findById(flightDto.getId()).orElseThrow(() -> new EntityNotFoundException("Flight not found"));
-            } else {
-                flight = new Flight();
+                if (flightDto.getId() != null) {
+                    flight = flightRepository.findById(flightDto.getId()).orElseThrow(() -> new EntityNotFoundException("Flight not found"));
+                } else {
+                    flight = new Flight();
+                }
+                dtoToEntity(flight, flightDto, airplane);
+                checkBusinessRules(flight);
+                flightRepository.save(flight);
+                return flight;
+            } finally {
+                locks.remove(flightDto.getArrivalAirportCode());
+                locks.remove(flightDto.getDepartureAirportCode());
             }
-            dtoToEntity(flight, flightDto, airplane);
-            checkBusinessRules(flight);
-            flightRepository.save(flight);
-            locks.remove(flightDto.getDepartureAirportCode());
-            locks.remove(flightDto.getDepartureAirportCode());
-            return flight;
         }
     }
 
