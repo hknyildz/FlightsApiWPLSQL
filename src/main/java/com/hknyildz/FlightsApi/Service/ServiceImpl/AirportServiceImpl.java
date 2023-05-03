@@ -1,23 +1,25 @@
 package com.hknyildz.FlightsApi.Service.ServiceImpl;
 
 import com.hknyildz.FlightsApi.Exception.EntityNotFoundException;
+import com.hknyildz.FlightsApi.Model.Dto.AirportDto;
 import com.hknyildz.FlightsApi.Model.Entity.Airport;
+import com.hknyildz.FlightsApi.Repo.AirportRepo;
 import com.hknyildz.FlightsApi.Repository.AirportRepository;
 import com.hknyildz.FlightsApi.Service.AirportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @Service
 public class AirportServiceImpl implements AirportService {
-
     @Autowired
-    AirportRepository airportRepository;
+    AirportRepo airportRepo;
 
     @Override
-    public List<Airport> getAllList() {
-        List<Airport> airports = (List<Airport>) airportRepository.findAll();
+    public List<AirportDto> getAllList() throws SQLException {
+        List<AirportDto> airports = airportRepo.findAll();
         if (airports.isEmpty()) {
             throw new EntityNotFoundException();
         }
@@ -25,9 +27,9 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public Airport getByAirportCode(String airportCode) {
+    public AirportDto getByAirportCode(String airportCode) throws SQLException {
 
-        Airport airport = airportRepository.findByAirportCode(airportCode);
+        AirportDto airport = airportRepo.findByAirportCode(airportCode);
         if (airport != null) {
             return airport;
         } else {

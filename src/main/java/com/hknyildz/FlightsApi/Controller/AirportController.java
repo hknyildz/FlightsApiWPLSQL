@@ -1,10 +1,12 @@
 package com.hknyildz.FlightsApi.Controller;
 
+import com.hknyildz.FlightsApi.Model.Dto.AirportDto;
 import com.hknyildz.FlightsApi.Model.Entity.Airport;
 import com.hknyildz.FlightsApi.Service.AirportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -15,13 +17,13 @@ public class AirportController {
     AirportService airportService;
 
     @GetMapping
-    public @ResponseBody List<Airport> getAllAirports() {
+    public @ResponseBody List<AirportDto> getAllAirports() throws SQLException {
 
         return airportService.getAllList();
     }
 
     @GetMapping("/{airportCode}")
-    public Airport getByAirportCode(@PathVariable("airportCode") String airportCode) {
+    public AirportDto getByAirportCode(@PathVariable("airportCode") String airportCode) throws SQLException {
         return airportService.getByAirportCode(airportCode);
     }
 }
