@@ -21,6 +21,7 @@ public class Airline {
     @NaturalId
     private String airlineCode;
 
+
     public Airline(String name, String airlineCode) {
         this.name = name;
         this.airlineCode = airlineCode;
@@ -32,6 +33,10 @@ public class Airline {
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

@@ -1,13 +1,15 @@
 package com.hknyildz.FlightsApi.Service;
 
+import com.hknyildz.FlightsApi.Model.Dto.AirplaneDto;
 import com.hknyildz.FlightsApi.Model.Entity.Airplane;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface AirplaneService {
-    List<Airplane> getAllList();
+    List<AirplaneDto> getAllList() throws SQLException;
 
-    Airplane getByAirplaneCode(String airplaneCode);
+    AirplaneDto getByAirplaneCode(String airplaneCode) throws SQLException;
 
-    List<Airplane> getByAirlineCode(String airlineCode);
+    List<AirplaneDto> getByAirlineCode(String airlineCode) throws SQLException;
 }

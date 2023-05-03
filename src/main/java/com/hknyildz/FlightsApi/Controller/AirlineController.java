@@ -5,6 +5,7 @@ import com.hknyildz.FlightsApi.Service.AirlineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -15,13 +16,13 @@ public class AirlineController {
     AirlineService airlineService;
 
     @GetMapping
-    public @ResponseBody List<Airline> getAllAirlines() {
+    public @ResponseBody List<Airline> getAllAirlines() throws SQLException {
 
         return airlineService.getAllList();
     }
 
     @GetMapping("/{airlineCode}")
-    public Airline getByAirlineCode(@PathVariable("airlineCode") String airlineCode) {
+    public Airline getByAirlineCode(@PathVariable("airlineCode") String airlineCode) throws SQLException {
         return airlineService.getByAirlineCode(airlineCode);
     }
 
