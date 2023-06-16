@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -18,13 +19,13 @@ public class FlightController {
     FlightService flightService;
 
     @GetMapping
-    public @ResponseBody List<FlightDto> getAllFlights() {
+    public @ResponseBody List<FlightDto> getAllFlights() throws SQLException {
         return flightService.getAllList();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Flight createOrUpdate(@Valid @RequestBody FlightDto flightDto) {
+    public String createOrUpdate(@Valid @RequestBody FlightDto flightDto) {
         return flightService.createOrUpdate(flightDto);
     }
 

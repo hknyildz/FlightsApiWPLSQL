@@ -4,12 +4,13 @@ package com.hknyildz.FlightsApi.Service;
 import com.hknyildz.FlightsApi.Model.Dto.FlightDto;
 import com.hknyildz.FlightsApi.Model.Entity.Flight;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface FlightService {
-    List<FlightDto> getAllList();
+    List<FlightDto> getAllList() throws SQLException;
 
-    Flight createOrUpdate(FlightDto flightDto);
+    String createOrUpdate(FlightDto flightDto);
 
     List<FlightDto> getFlightsByDepartureAirport(String airportCode);
 

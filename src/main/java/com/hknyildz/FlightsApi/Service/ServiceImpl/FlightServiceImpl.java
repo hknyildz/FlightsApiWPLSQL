@@ -2,10 +2,15 @@ package com.hknyildz.FlightsApi.Service.ServiceImpl;
 
 import com.hknyildz.FlightsApi.Exception.ApiRequestException;
 import com.hknyildz.FlightsApi.Exception.EntityNotFoundException;
+import com.hknyildz.FlightsApi.Model.Dto.AirplaneDto;
+import com.hknyildz.FlightsApi.Model.Dto.AirportDto;
 import com.hknyildz.FlightsApi.Model.Dto.FlightDto;
 import com.hknyildz.FlightsApi.Model.Entity.Airplane;
 import com.hknyildz.FlightsApi.Model.Entity.Airport;
 import com.hknyildz.FlightsApi.Model.Entity.Flight;
+import com.hknyildz.FlightsApi.Repo.AirplaneRepo;
+import com.hknyildz.FlightsApi.Repo.AirportRepo;
+import com.hknyildz.FlightsApi.Repo.FlightRepo;
 import com.hknyildz.FlightsApi.Repository.AirplaneRepository;
 import com.hknyildz.FlightsApi.Repository.AirportRepository;
 import com.hknyildz.FlightsApi.Repository.FlightRepository;
@@ -13,6 +18,7 @@ import com.hknyildz.FlightsApi.Service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -35,36 +41,41 @@ public class FlightServiceImpl implements FlightService {
     AirplaneRepository airplaneRepository;
     @Autowired
     AirportRepository airportRepository;
+    @Autowired
+    FlightRepo flightRepo;
+
+   @Autowired
+    AirportRepo airportRepo;
+
+  @Autowired
+   AirplaneRepo airplaneRepo;
 
     @Override
-    public List<FlightDto> getAllList() {
-        List<Flight> flights = (List<Flight>) flightRepository.findAll();
+    public List<FlightDto> getAllList() throws SQLException {
+        List<FlightDto> flights = flightRepo.findAll();
         if (flights.isEmpty()) {
             throw new EntityNotFoundException();
         }
-        return entityListToDtoList(flights);
+        return flights;
     }
 
     @Override
-    public Flight createOrUpdate(FlightDto flightDto) {
+    public String createOrUpdate(FlightDto flightDto) {
         synchronized (getLock(flightDto.getDepartureAirportCode())) {
             try {
                 getLock(flightDto.getArrivalAirportCode());
-                Airport arrivalAirport = airportRepository.findByAirportCode(flightDto.getArrivalAirportCode());
-                Airport departureAirport = airportRepository.findByAirportCode(flightDto.getDepartureAirportCode());
-                Airplane airplane = airplaneRepository.findByAirplaneCode(flightDto.getAirplaneCode());
-                Flight flight;
-                checkValidations(airplane, arrivalAirport, departureAirport);
+                FlightDto flight = new FlightDto();
+                //checkBusinessRules(flight);
+                dtoToEntity(flight, flightDto);
+                return flightRepo.save(flight);
 
-                if (flightDto.getId() != null) {
-                    flight = flightRepository.findById(flightDto.getId()).orElseThrow(() -> new EntityNotFoundException("Flight not found"));
-                } else {
-                    flight = new Flight();
-                }
-                dtoToEntity(flight, flightDto, airplane);
-                checkBusinessRules(flight);
+                /*
                 flightRepository.save(flight);
                 return flight;
+                */
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             } finally {
                 locks.remove(flightDto.getArrivalAirportCode());
                 locks.remove(flightDto.getDepartureAirportCode());
@@ -99,18 +110,18 @@ public class FlightServiceImpl implements FlightService {
         checkEligibilityForFlight(flight.getDepartureAirport(), flight.getArrivalAirport(), flight.getDepartureTime());
     }
 
-    private void dtoToEntity(Flight flight, FlightDto flightDto, Airplane airplane) {
+    private void dtoToEntity(FlightDto newFlight, FlightDto flightDto) {
 
         LocalDateTime arrivalDateTime = LocalDateTime.parse(flightDto.getArrivalTime(), formatter);
         LocalDateTime departureDateTime = LocalDateTime.parse(flightDto.getDepartureTime(), formatter);
         Long duration = ChronoUnit.MINUTES.between(departureDateTime, arrivalDateTime);
 
-        flight.setAirplane(airplane);
-        flight.setArrivalAirport(flightDto.getArrivalAirportCode());
-        flight.setDepartureAirport(flightDto.getDepartureAirportCode());
-        flight.setArrivalTime(arrivalDateTime);
-        flight.setDepartureTime(departureDateTime);
-        flight.setDuration(duration);
+        newFlight.setArrivalAirportCode(flightDto.getArrivalAirportCode());
+        newFlight.setDepartureAirportCode(flightDto.getDepartureAirportCode());
+        newFlight.setArrivalTime(flightDto.getArrivalTime());
+        newFlight.setDepartureTime(flightDto.getDepartureTime());
+        newFlight.setDuration(duration.toString());
+        newFlight.setAirplaneCode(flightDto.getAirplaneCode());
     }
 
     private FlightDto entityToDto(Flight flight) {
@@ -128,7 +139,7 @@ public class FlightServiceImpl implements FlightService {
     }
 
 
-    private void checkValidations(Airplane airplane, Airport arrivalAirport, Airport departureAirport) {
+    private void checkValidations(AirplaneDto airplane, AirportDto arrivalAirport, AirportDto departureAirport) {
 
         if (airplane == null) {
             throw new EntityNotFoundException("There is no plane with given code");
@@ -153,7 +164,7 @@ public class FlightServiceImpl implements FlightService {
     }
 
     private void checkEligibilityForFlight(String departureAirportCode, String arrivalAirportCode, LocalDateTime departureDateTime) {
-        int flightCount = flightRepository.getDailyFlightCountBetweenAirports(departureAirportCode, arrivalAirportCode, departureDateTime.toLocalDate()); // gunluk hesaplama eksik
+        int flightCount = flightRepository.getDailyFlightCountBetweenAirports(departureAirportCode, arrivalAirportCode, departureDateTime.toLocalDate());
         if (flightCount >= MAX_DAILY_FLIGHTS) {
             throw new ApiRequestException("There is daily at most 3 flights allowed for an airline between 2 destinations.");
         }
